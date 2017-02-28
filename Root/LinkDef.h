@@ -1,3 +1,5 @@
+#include <IDTrackSel/TightTrackVertexAssociationToolAlgo.h>
+
 #include <IDTrackSel/InDetTrackSelectionToolAlgo.h>
 
 #ifdef __CINT__
@@ -11,4 +13,8 @@
 
 #ifdef __CINT__
 #pragma link C++ class InDetTrackSelectionToolAlgo+;
+#endif
+
+#ifdef __CINT__
+#pragma link C++ class TightTrackVertexAssociationToolAlgo+;
 #endif
