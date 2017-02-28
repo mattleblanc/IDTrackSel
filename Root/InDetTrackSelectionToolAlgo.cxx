@@ -213,16 +213,11 @@ EL::StatusCode InDetTrackSelectionToolAlgo :: execute ()
 
   m_store->record( selectedTracks, m_outputTrackContainer );
 
-
   return EL::StatusCode::SUCCESS;
 }
 
 EL::StatusCode InDetTrackSelectionToolAlgo :: postExecute () { return EL::StatusCode::SUCCESS; }
 
-EL::StatusCode InDetTrackSelectionToolAlgo :: finalize ()
-{
-
-  return EL::StatusCode::SUCCESS;
-}
+EL::StatusCode InDetTrackSelectionToolAlgo :: finalize () { return EL::StatusCode::SUCCESS; }
 
 EL::StatusCode InDetTrackSelectionToolAlgo :: histFinalize () { return EL::StatusCode::SUCCESS; }
