@@ -181,6 +181,8 @@ EL::StatusCode InDetTrackSelectionToolAlgo :: initialize ()
 
 EL::StatusCode InDetTrackSelectionToolAlgo :: execute ()
 {
+  m_debug = false;
+
   // Retrieve the input TrackParticleContainer
   const xAOD::TrackParticleContainer_v1* inputTracks  = 0;
   if(!m_event->retrieve(inputTracks, m_inputTrackContainer).isSuccess()){
