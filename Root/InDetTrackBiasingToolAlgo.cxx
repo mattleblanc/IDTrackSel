@@ -37,8 +37,15 @@ EL::StatusCode InDetTrackBiasingToolAlgo :: initialize ()
 
   //ANA_CHECK( m_JetTrackFilterToolAlgo->setProperty("CutLevel", m_CutLevel ) ); // set tool to apply the pre-defined "Loose-Primary" cuts
 
+  //Most (>2/3) of the lumi came after 304178. https://atlas.web.cern.ch/Atlas/GROUPS/DATAPREPARATION/PublicPlots/DataSummary/figs/intlumivstimeRun2DQ.png
+  // post d0 fix: 304198 - 311481 //should randomly do this, with the right proportions? that is the last pp run of 2016
+  //rnumb = 304178; // pre d0 fix: 301912 - 304178 mid-july: https://atlas-tagservices.cern.ch/tagservices/RunBrowser/runBrowserReport/rBR_Period_Report.php?fnt=data16_13TeV&pn=F
+  //rnumb = 300908; // Calibrating for 2016 runs before IBL temperature change (297730 to 300908)
+
+  uint32_t rnumb = 311481; 
   ANA_CHECK( m_InDetTrackBiasingTool->initialize() );
   ANA_CHECK( m_InDetTrackBiasingTool->applySystematicVariation( m_systSetTrkWeak) );
+  ANA_CHECK( m_InDetTrackBiasingTool->setProperty("runNumber",rnumb) );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -62,33 +69,18 @@ EL::StatusCode InDetTrackBiasingToolAlgo :: execute ()
   //for(const xAOD::TrackParticle* track : *inputTracks){
   for(auto track : *inputTracks)
     {
-      
       // If there ain't no track, don't take a track ...
       if(!track)
 	continue;
-      
-      // If the track don't fit, don't take a track ...
-      /*
-	if(!m_InDetTrackBiasingTool->accept(*track))
-	{
-	if(m_debug) Info("execute()","track rejected\t");
-	continue;
-	}
-      */
-      
-      float original_pt = track->p4().Pt();
-      
+
+      // Correct the tracks and push back into the new container
       xAOD::TrackParticle* newTrack = nullptr;
-      m_InDetTrackBiasingTool->applySystematicVariation(m_systSetTrkWeak2); //should be the uncertainty.
-      m_InDetTrackBiasingTool->correctedCopy( *track, newTrack );
-      //track->auxdata<float>("original_pt") = newTrack->p4().Pt();
+      m_InDetTrackBiasingTool->correctedCopy( *track, newTrack );      
+      biasedTracks->push_back(track);
       delete newTrack;
-      m_InDetTrackBiasingTool->applySystematicVariation(m_systSetTrkWeak); //should be the nominal.
-      
-      if(m_debug) Info("execute()","track accepted\t");
-      biasedTracks->push_back(newTrack);
     }
-  
+
+  //m_InDetTrackBiasingTool->applyContainerCorrection( *biasedTracks );
   m_store->record( biasedTracks, m_outputTrackContainer );
   
   return EL::StatusCode::SUCCESS;
