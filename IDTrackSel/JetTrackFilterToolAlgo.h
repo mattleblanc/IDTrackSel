@@ -14,6 +14,7 @@ class JetTrackFilterToolAlgo : public EL::Algorithm
 {
 public:
   std::string m_name = "MattLeBlanc";
+  std::string m_JetContainerName = "AntiKt10LCTopoJets";
   std::string m_inputTrackContainer;
   std::string m_outputTrackContainer;
 
@@ -27,6 +28,10 @@ public:
 
   InDet::JetTrackFilterTool* m_JetTrackFilterTool; //!
 
+  CP::SystematicSet m_systSetJet = {
+    InDet::TrackSystematicMap[InDet::TRK_EFF_LOOSE_TIDE]
+  };
+  
  public:
   // this is a standard constructor
   JetTrackFilterToolAlgo ();

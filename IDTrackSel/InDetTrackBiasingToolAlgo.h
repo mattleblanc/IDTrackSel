@@ -27,6 +27,12 @@ public:
 
   InDet::InDetTrackBiasingTool* m_InDetTrackBiasingTool; //!
 
+  CP::SystematicSet m_systSetTrkWeak = {}; //!
+  CP::SystematicSet m_systSetTrkWeak2 = {
+    InDet::TrackSystematicMap[InDet::TRK_BIAS_QOVERP_SAGITTA_WM]
+  }; //!
+
+
  public:
   // this is a standard constructor
   InDetTrackBiasingToolAlgo ();

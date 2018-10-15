@@ -1,8 +1,14 @@
 # IDTrackSel
 
-Simple wrappers around ATLAS track selection tools (`InDetTrackSelectionTool` and `TrackVertexAssociationTool`) ...
+Simple wrappers around ATLAS track selection tools (`InDetTrackSelectionTool` and `TrackVertexAssociationTool`). Tested in `R21.2` and (hopefully) backwards-compatible to `R20.7`.
 
 ## Setup
+
+In `R21`, these have been tested in `AnalysisBase/21.2.46+` but likely work with earlier releases.
+
+You must add a sparse checkout of `athena` and include the `InDetTrackSystematicsTools` package locally.
+
+In `R20.7`, try something like:
 
 ```
 setupATLAS
@@ -39,6 +45,14 @@ c.setalg("TreeAlgo", {"m_debug": False,
                       "m_trackParticlesDetailStr": "kinematic trackpars numbers vertex",
                     })
 
+```
+
+## Systematics
+
+Algorithms are included which provide easy implementations of the recommended tracking systematics in R21:
+
+```
+e.g.
 ```
 
 ## Documentation

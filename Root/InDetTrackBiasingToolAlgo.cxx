@@ -33,11 +33,12 @@ EL::StatusCode InDetTrackBiasingToolAlgo :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  m_InDetTrackBiasingTool = new InDet::InDetTrackBiasingTool( "JetTrackFilterTool/"+m_name );
+  m_InDetTrackBiasingTool = new InDet::InDetTrackBiasingTool( "weakmodes" );
 
   //ANA_CHECK( m_JetTrackFilterToolAlgo->setProperty("CutLevel", m_CutLevel ) ); // set tool to apply the pre-defined "Loose-Primary" cuts
 
   ANA_CHECK( m_InDetTrackBiasingTool->initialize() );
+  ANA_CHECK( m_InDetTrackBiasingTool->applySystematicVariation( m_systSetTrkWeak) );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -54,31 +55,42 @@ EL::StatusCode InDetTrackBiasingToolAlgo :: execute ()
   }
 
   // Create the output TrackParticleContainer
-  ConstDataVector<xAOD::TrackParticleContainer>* selectedTracks(nullptr);
-  selectedTracks = new ConstDataVector<xAOD::TrackParticleContainer>(SG::VIEW_ELEMENTS);
+  ConstDataVector<xAOD::TrackParticleContainer>* biasedTracks(nullptr);
+  biasedTracks = new ConstDataVector<xAOD::TrackParticleContainer>(SG::VIEW_ELEMENTS);
 
   // Loop over the tracks
   //for(const xAOD::TrackParticle* track : *inputTracks){
-  for(auto track : *inputTracks){
-   
-    // If there ain't no track, don't take a track ...
-    if(!track)
-      continue;
-
-    // If the track don't fit, don't take a track ...
-    /*
-    if(!m_TrackSelTool->accept(*track))
-      {
+  for(auto track : *inputTracks)
+    {
+      
+      // If there ain't no track, don't take a track ...
+      if(!track)
+	continue;
+      
+      // If the track don't fit, don't take a track ...
+      /*
+	if(!m_InDetTrackBiasingTool->accept(*track))
+	{
 	if(m_debug) Info("execute()","track rejected\t");
 	continue;
-      }
-    */
-    if(m_debug) Info("execute()","track accepted\t");
-    selectedTracks->push_back(track);
-  }
-
-  m_store->record( selectedTracks, m_outputTrackContainer );
-
+	}
+      */
+      
+      float original_pt = track->p4().Pt();
+      
+      xAOD::TrackParticle* newTrack = nullptr;
+      m_InDetTrackBiasingTool->applySystematicVariation(m_systSetTrkWeak2); //should be the uncertainty.
+      m_InDetTrackBiasingTool->correctedCopy( *track, newTrack );
+      //track->auxdata<float>("original_pt") = newTrack->p4().Pt();
+      delete newTrack;
+      m_InDetTrackBiasingTool->applySystematicVariation(m_systSetTrkWeak); //should be the nominal.
+      
+      if(m_debug) Info("execute()","track accepted\t");
+      biasedTracks->push_back(newTrack);
+    }
+  
+  m_store->record( biasedTracks, m_outputTrackContainer );
+  
   return EL::StatusCode::SUCCESS;
 }
 
