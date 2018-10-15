@@ -26,6 +26,7 @@ atlas_depends_on_subdirs( PUBLIC
                           PhysicsAnalysis/D3PDTools/EventLoopGrid
                           InnerDetector/InDetRecTools/InDetTrackSelectionTool
 			  InnerDetector/InDetRecTools/TrackVertexAssociationTool
+			  PhysicsAnalysis/TrackingID/InDetTrackSystematicsTools
                           PhysicsAnalysis/AnalysisCommon/AssociationUtils
                           PhysicsAnalysis/AnalysisCommon/IsolationSelection
                           PhysicsAnalysis/AnalysisCommon/PATInterfaces
@@ -77,5 +78,5 @@ atlas_add_library (IDTrackSelLib
    IDTrackSel/*.h IDTrackSel/*.ihh Root/*.cxx ${IDTrackSelDictSource}
    PUBLIC_HEADERS IDTrackSel
    INCLUDE_DIRS
-   LINK_LIBRARIES EventLoop InDetTrackSelectionToolLib TrackVertexAssociationToolLib xAODAnaHelpersLib
+   LINK_LIBRARIES EventLoop InDetTrackSystematicsToolsLib InDetTrackSelectionToolLib TrackVertexAssociationToolLib xAODAnaHelpersLib
    PRIVATE_LINK_LIBRARIES )
