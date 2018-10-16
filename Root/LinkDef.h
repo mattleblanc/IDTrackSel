@@ -1,6 +1,9 @@
 #include <IDTrackSel/TightTrackVertexAssociationToolAlgo.h>
-
 #include <IDTrackSel/InDetTrackSelectionToolAlgo.h>
+#include <IDTrackSel/JetTrackFilterToolAlgo.h>
+#include <IDTrackSel/InDetTrackBiasingToolAlgo.h>
+#include <IDTrackSel/InDetTrackTruthFilterToolAlgo.h>
+#include <IDTrackSel/InDetTrackTruthOriginToolAlgo.h>
 
 #ifdef __CINT__
 
@@ -17,4 +20,20 @@
 
 #ifdef __CINT__
 #pragma link C++ class TightTrackVertexAssociationToolAlgo+;
+#endif
+
+#ifdef __CINT__
+#pragma link C++ class JetTrackFilterToolAlgo+;
+#endif
+
+#ifdef __CINT__
+#pragma link C++ class InDetTrackBiasingToolAlgo+;
+#endif
+
+#ifdef __CINT__
+#pragma link C++ class InDetTrackTruthFilterToolAlgo+;
+#endif
+
+#ifdef __CINT__
+#pragma link C++ class InDetTrackTruthOriginToolAlgo+;
 #endif
