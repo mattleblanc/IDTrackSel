@@ -4,6 +4,7 @@
 #include <IDTrackSel/InDetTrackBiasingToolAlgo.h>
 #include <IDTrackSel/InDetTrackTruthFilterToolAlgo.h>
 #include <IDTrackSel/InDetTrackTruthOriginToolAlgo.h>
+#include <IDTrackSel/SecondaryVertexFinderAlgo.h>
 
 #ifdef __CINT__
 
@@ -36,4 +37,8 @@
 
 #ifdef __CINT__
 #pragma link C++ class InDetTrackTruthOriginToolAlgo+;
+#endif
+
+#ifdef __CINT__
+#pragma link C++ class SecondaryVertexFinderAlgo+;
 #endif
