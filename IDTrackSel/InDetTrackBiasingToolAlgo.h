@@ -16,6 +16,7 @@ public:
   std::string m_name = "MattLeBlanc";
   std::string m_inputTrackContainer;
   std::string m_outputTrackContainer;
+  Bool_t m_isData = false;
   
   // tool parameters go here
 

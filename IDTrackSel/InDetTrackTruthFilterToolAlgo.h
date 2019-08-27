@@ -16,6 +16,7 @@ public:
   std::string m_name = "MattLeBlanc";
   std::string m_inputTrackContainer;
   std::string m_outputTrackContainer;
+  std::string m_systematic;
   
   Bool_t m_debug;
     

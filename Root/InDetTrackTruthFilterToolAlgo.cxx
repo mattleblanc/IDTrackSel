@@ -32,15 +32,26 @@ EL::StatusCode InDetTrackTruthFilterToolAlgo :: initialize ()
   Info("initialize()", "InDetTrackTruthFilterToolAlgo_%s", m_inputTrackContainer.c_str() );
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
+  
+  CP::SystematicSet systSetTrk = {};
+  if(m_systematic=="incl")
+    {
+      CP::SystematicSet systSetTrk = {
+	InDet::TrackSystematicMap[InDet::TRK_EFF_TIGHT_GLOBAL],
+	InDet::TrackSystematicMap[InDet::TRK_EFF_TIGHT_IBL],
+	InDet::TrackSystematicMap[InDet::TRK_EFF_TIGHT_PP0],
+	InDet::TrackSystematicMap[InDet::TRK_EFF_TIGHT_PHYSMODEL]
+      };
+    }
+  if(m_systematic=="fake")
+    {
+      CP::SystematicSet systSetTrk = {
+	InDet::TrackSystematicMap[InDet::TRK_FAKE_RATE_LOOSE]
+      };
+    }
+  
 
-  CP::SystematicSet systSetTrk = {
-    InDet::TrackSystematicMap[InDet::TRK_EFF_TIGHT_GLOBAL],
-    InDet::TrackSystematicMap[InDet::TRK_EFF_TIGHT_IBL],
-    InDet::TrackSystematicMap[InDet::TRK_EFF_TIGHT_PP0],
-    InDet::TrackSystematicMap[InDet::TRK_EFF_TIGHT_PHYSMODEL]
-  };
-
-  m_InDetTrackTruthFilterTool = new InDet::InDetTrackTruthFilterTool( "inclusiveeffic" );
+  m_InDetTrackTruthFilterTool = new InDet::InDetTrackTruthFilterTool( m_systematic );
   ANA_CHECK( m_InDetTrackTruthFilterTool->initialize() );
   ANA_CHECK( m_InDetTrackTruthFilterTool->applySystematicVariation(systSetTrk) );
 

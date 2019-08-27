@@ -54,7 +54,7 @@ atlas_depends_on_subdirs( PUBLIC
                           Reconstruction/Jet/JetSubStructureUtils
 			  Reconstruction/Jet/JetSubStructureMomentTools
                           Reconstruction/Jet/JetUncertainties
-			  Reconstruction/Jet/JetRecTools			  
+			  # Reconstruction/Jet/JetRecTools			  
                           Reconstruction/Jet/JetRec
 			  Reconstruction/MET/METInterface
                           Reconstruction/MET/METUtilities
