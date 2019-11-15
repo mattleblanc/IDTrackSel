@@ -59,10 +59,18 @@ EL::StatusCode TightTrackVertexAssociationToolAlgo :: execute ()
     Error("execute()","Failed to retrieve vertex container. Exiting.");
     return EL::StatusCode::FAILURE;
   }
-
-  const auto it_pv = std::find_if(vertices->cbegin(), vertices->cend(),[](const xAOD::Vertex* vtx){return vtx->vertexType() == xAOD::VxType::PriVtx;});
-  const xAOD::Vertex* primaryVertex = (it_pv == vertices->cend()) ? nullptr : *it_pv;
   
+  xAOD::Vertex* primaryVertex = nullptr;
+    if(vertices->size()==1) // special case, or else there are problems
+    {
+      primaryVertex = *vertices->cbegin();
+    }
+  else
+    {
+      const auto it_pv = std::find_if(vertices->cbegin(), vertices->cend(),[](const xAOD::Vertex* vtx){return vtx->vertexType() == xAOD::VxType::PriVtx;});
+      primaryVertex = (it_pv == vertices->cend()) ? nullptr : *it_pv;
+    }
+
   // Retrieve the input TrackParticleContainer
   const xAOD::TrackParticleContainer_v1* inputTracks  = 0;
   if(!m_event->retrieve(inputTracks, m_inputTrackContainer).isSuccess()){
@@ -85,11 +93,13 @@ EL::StatusCode TightTrackVertexAssociationToolAlgo :: execute ()
     // If the track ain't associated with the primary vertex, don't take a track ...
     if(!m_TightTrktoVxTool->isCompatible(*track,*primaryVertex)) 
       {
-	if(m_debug) Info("execute()","track rejected");
+	//if(m_debug) Info("execute()","track rejected");
+	//Info("execute()","track rejected");
 	continue;
       }
 
-    if(m_debug) Info("execute()","track accepted\t");
+    //if(m_debug) Info("execute()","track accepted\t");
+    //Info("execute()","track accepted\t");
     selectedTracks->push_back(track);
   }
 
