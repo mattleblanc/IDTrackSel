@@ -27,6 +27,7 @@ atlas_depends_on_subdirs( PUBLIC
                           InnerDetector/InDetRecTools/InDetTrackSelectionTool
 			  InnerDetector/InDetRecTools/TrackVertexAssociationTool
 			  PhysicsAnalysis/TrackingID/InDetTrackSystematicsTools
+			  PhysicsAnalysis/Algorithms/SystematicsHandles
                           PhysicsAnalysis/AnalysisCommon/AssociationUtils
                           PhysicsAnalysis/AnalysisCommon/IsolationSelection
                           PhysicsAnalysis/AnalysisCommon/PATInterfaces
@@ -54,7 +55,7 @@ atlas_depends_on_subdirs( PUBLIC
                           Reconstruction/Jet/JetSubStructureUtils
 			  Reconstruction/Jet/JetSubStructureMomentTools
                           Reconstruction/Jet/JetUncertainties
-			  # Reconstruction/Jet/JetRecTools			  
+			  Reconstruction/Jet/JetRecTools			  
                           Reconstruction/Jet/JetRec
 			  Reconstruction/MET/METInterface
                           Reconstruction/MET/METUtilities
@@ -78,5 +79,5 @@ atlas_add_library (IDTrackSelLib
    IDTrackSel/*.h IDTrackSel/*.ihh Root/*.cxx ${IDTrackSelDictSource}
    PUBLIC_HEADERS IDTrackSel
    INCLUDE_DIRS
-   LINK_LIBRARIES EventLoop InDetTrackSystematicsToolsLib InDetTrackSelectionToolLib TrackVertexAssociationToolLib xAODAnaHelpersLib
+   LINK_LIBRARIES EventLoop InDetTrackSystematicsToolsLib InDetTrackSelectionToolLib TrackVertexAssociationToolLib JetMomentToolsLib JetSubStructureUtils JetSubStructureMomentToolsLib JetRecToolsLib JetReclusteringLib AsgTools xAODAnaHelpersLib
    PRIVATE_LINK_LIBRARIES )
