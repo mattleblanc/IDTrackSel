@@ -98,7 +98,8 @@ c.algorithm("InDetTrackSelectionToolAlgo", {
 c.algorithm("TARJetAlgo", {
     #"m_inputJetContainer" : "AntiKt8LCTopoRCJets",
     "m_inputJetContainer" : "AntiKt2LCTopoJets",
-    "m_inputTrackContainer" : "SelectedTrackParticles_InDetTrackParticles",
+    #"m_inputTrackContainer" : "SelectedTrackParticles_InDetTrackParticles",
+    "m_inputTrackContainer" : "InDetTrackParticles",
     "m_outputTrackContainer" : "OutTracks",
     "m_assocTracksOutName" : "TARTracks",
     "m_dRmatch" : 0.3,

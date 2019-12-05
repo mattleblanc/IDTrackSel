@@ -13,6 +13,7 @@
 #include "JetInterface/IJetModifier.h"
 #include "JetRecTools/TARJetTool.h"
 #include <JetSubStructureMomentTools/NSubjettinessRatiosTool.h>
+#include <JetSubStructureMomentTools/NSubjettinessTool.h>
 #include "JetReclustering/JetReclusteringTool.h"
 
 #include "xAODTracking/TrackParticleContainer.h"
@@ -31,8 +32,8 @@ class TARJetAlgo : public EL::Algorithm
  public:
   std::string m_name = "MattLeBlanc";
   std::string m_inputJetContainer;
-  std::string m_inputTrackContainer;
-  std::string m_outputTrackContainer;
+  std::string m_inputTrackContainer = "InDetTrackParticles";
+  std::string m_outputTrackContainer = "TARTracksOutput";
   std::string m_assocTracksOutName = "TARTracks";
   float m_dRmatch = 0.3;
   std::string m_assocTracksInName = "GhostTrack";
@@ -47,6 +48,7 @@ class TARJetAlgo : public EL::Algorithm
   xAOD::TStore *m_store; //!
 
   asg::AnaToolHandle<NSubjettinessRatiosTool> m_NSubjettinessRatiosTool_handle; //!
+  asg::AnaToolHandle<NSubjettinessTool> m_NSubjettinessTool_handle; //!
   asg::AnaToolHandle<IJetModifier> m_TARDecoTool_handle; //!
   asg::AnaToolHandle<IJetExecuteTool> m_jetReclTool_handle; //!
 
