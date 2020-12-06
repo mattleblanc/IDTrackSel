@@ -91,7 +91,7 @@ EL::StatusCode InDetTrackBiasingToolAlgo :: execute ()
       // Correct the tracks and push back into the new container
       xAOD::TrackParticle* newTrack = nullptr;
       m_InDetTrackBiasingTool->correctedCopy( *track, newTrack );      
-      biasedTracks->push_back(track);
+      biasedTracks->push_back(newTrack);
       delete newTrack;
     }
 

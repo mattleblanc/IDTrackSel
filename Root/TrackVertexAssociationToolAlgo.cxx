@@ -1,18 +1,18 @@
 #include <EventLoop/Job.h>
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
-#include <IDTrackSel/TightTrackVertexAssociationToolAlgo.h>
+#include <IDTrackSel/TrackVertexAssociationToolAlgo.h>
 
 #include <EventLoop/OutputStream.h>
 
 #include <AsgTools/MessageCheck.h>
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(TightTrackVertexAssociationToolAlgo)
+ClassImp(TrackVertexAssociationToolAlgo)
 
-TightTrackVertexAssociationToolAlgo :: TightTrackVertexAssociationToolAlgo () {}
+TrackVertexAssociationToolAlgo :: TrackVertexAssociationToolAlgo () {}
 
-EL::StatusCode TightTrackVertexAssociationToolAlgo :: setupJob (EL::Job& job)
+EL::StatusCode TrackVertexAssociationToolAlgo :: setupJob (EL::Job& job)
 {
   ANA_CHECK_SET_TYPE (EL::StatusCode);
   job.useXAOD();
@@ -21,35 +21,26 @@ EL::StatusCode TightTrackVertexAssociationToolAlgo :: setupJob (EL::Job& job)
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode TightTrackVertexAssociationToolAlgo :: histInitialize () { return EL::StatusCode::SUCCESS; }
+EL::StatusCode TrackVertexAssociationToolAlgo :: histInitialize () { return EL::StatusCode::SUCCESS; }
 
-EL::StatusCode TightTrackVertexAssociationToolAlgo :: fileExecute () { return EL::StatusCode::SUCCESS; }
+EL::StatusCode TrackVertexAssociationToolAlgo :: fileExecute () { return EL::StatusCode::SUCCESS; }
 
-EL::StatusCode TightTrackVertexAssociationToolAlgo :: changeInput (bool firstFile) { return EL::StatusCode::SUCCESS; }
+EL::StatusCode TrackVertexAssociationToolAlgo :: changeInput (bool firstFile) { return EL::StatusCode::SUCCESS; }
 
-EL::StatusCode TightTrackVertexAssociationToolAlgo :: initialize ()
+EL::StatusCode TrackVertexAssociationToolAlgo :: initialize ()
 {
-  Info("initialize()", "TightTrackVertexAssociationToolAlgo_%s", m_inputTrackContainer.c_str() );
+  Info("initialize()", "TrackVertexAssociationToolAlgo_%s", m_inputTrackContainer.c_str() );
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
   
-  m_TightTrktoVxTool = new CP::TightTrackVertexAssociationTool("TightTrackVertexAssociationTool/"+m_name);
-
-  if(m_dzSinTheta_cut!=-999)
-    ANA_CHECK( m_TightTrktoVxTool->setProperty("dzSinTheta_cut", m_dzSinTheta_cut) ); // mm
-  
-  if(m_d0_cut!=-999)
-    ANA_CHECK( m_TightTrktoVxTool->setProperty("d0_cut", m_d0_cut) ); // mm
-
-  ANA_CHECK( m_TightTrktoVxTool->setProperty("Applyd0Selection",m_Applyd0Selection) );
-  ANA_CHECK( m_TightTrktoVxTool->setProperty("doPV",m_doPV) );
-
-  ANA_CHECK( m_TightTrktoVxTool->initialize() );
+  m_TrktoVxTool = new CP::TrackVertexAssociationTool( "TrackVertexAssociationTool/"+m_name );
+  ANA_CHECK(m_TrktoVxTool->setProperty( "WorkingPoint", m_workingPoint));
+  ANA_CHECK(m_TrktoVxTool->initialize());
 
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode TightTrackVertexAssociationToolAlgo :: execute ()
+EL::StatusCode TrackVertexAssociationToolAlgo :: execute ()
 {
   // Find the PV
        
@@ -91,7 +82,7 @@ EL::StatusCode TightTrackVertexAssociationToolAlgo :: execute ()
       continue;
 
     // If the track ain't associated with the primary vertex, don't take a track ...
-    if(!m_TightTrktoVxTool->isCompatible(*track,*primaryVertex)) 
+    if(!m_TrktoVxTool->isCompatible(*track,*primaryVertex)) 
       {
 	//if(m_debug) Info("execute()","track rejected");
 	//Info("execute()","track rejected");
@@ -108,8 +99,8 @@ EL::StatusCode TightTrackVertexAssociationToolAlgo :: execute ()
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode TightTrackVertexAssociationToolAlgo :: postExecute () { return EL::StatusCode::SUCCESS; }
+EL::StatusCode TrackVertexAssociationToolAlgo :: postExecute () { return EL::StatusCode::SUCCESS; }
 
-EL::StatusCode TightTrackVertexAssociationToolAlgo :: finalize () { return EL::StatusCode::SUCCESS; }
+EL::StatusCode TrackVertexAssociationToolAlgo :: finalize () { return EL::StatusCode::SUCCESS; }
 
-EL::StatusCode TightTrackVertexAssociationToolAlgo :: histFinalize () { return EL::StatusCode::SUCCESS; }
+EL::StatusCode TrackVertexAssociationToolAlgo :: histFinalize () { return EL::StatusCode::SUCCESS; }
