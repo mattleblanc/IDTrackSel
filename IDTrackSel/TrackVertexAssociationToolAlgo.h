@@ -18,7 +18,7 @@ class TrackVertexAssociationToolAlgo : public EL::Algorithm
   std::string m_name = "MattLeBlanc";
   std::string m_inputTrackContainer;
   std::string m_outputTrackContainer;
-  std::string m_workingPoint;
+  std::string m_workingPoint="loose";
 
   Bool_t m_debug=false;
 
