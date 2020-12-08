@@ -3,6 +3,8 @@
 #include <EventLoop/Worker.h>
 #include <IDTrackSel/InDetTrackBiasingToolAlgo.h>
 
+#include "xAODCore/ShallowCopy.h"
+
 #include <EventLoop/OutputStream.h>
 
 #include <AsgTools/MessageCheck.h>
@@ -58,6 +60,12 @@ EL::StatusCode InDetTrackBiasingToolAlgo :: initialize ()
     }
   else rnumb = rn;
 
+  m_systSetTrkWeak = {
+    InDet::TrackSystematicMap[InDet::TRK_BIAS_D0_WM],
+    InDet::TrackSystematicMap[InDet::TRK_BIAS_Z0_WM],
+    InDet::TrackSystematicMap[InDet::TRK_BIAS_QOVERP_SAGITTA_WM]
+  };
+
   ANA_CHECK( m_InDetTrackBiasingTool->initialize() );
   if(!m_isData) ANA_CHECK( m_InDetTrackBiasingTool->applySystematicVariation( m_systSetTrkWeak) );
   ANA_CHECK( m_InDetTrackBiasingTool->setProperty("runNumber",rnumb) );
@@ -76,26 +84,27 @@ EL::StatusCode InDetTrackBiasingToolAlgo :: execute ()
     return EL::StatusCode::FAILURE;
   }
 
+  //Create a shallow copy of the tracking container and apply the correction to it
+  std::pair< xAOD::TrackParticleContainer*, xAOD::ShallowAuxContainer* > inputTracks_shallowCopy = xAOD::shallowCopyContainer( *inputTracks );
+  //  ANA_CHECK( m_store->record( inputTracks_shallowCopy.first,  m_outputTrackContainer+"ShallowCopy"));
+  //  ANA_CHECK( m_store->record( inputTracks_shallowCopy.second, m_outputTrackContainer+"ShallowCopyAux."));
+
+  m_InDetTrackBiasingTool->applyContainerCorrection( *(inputTracks_shallowCopy.first)); 
+
   // Create the output TrackParticleContainer
   ConstDataVector<xAOD::TrackParticleContainer>* biasedTracks(nullptr);
   biasedTracks = new ConstDataVector<xAOD::TrackParticleContainer>(SG::VIEW_ELEMENTS);
 
-  // Loop over the tracks
-  //for(const xAOD::TrackParticle* track : *inputTracks){
-  for(auto track : *inputTracks)
+  for(auto track : *(inputTracks_shallowCopy.first))
     {
       // If there ain't no track, don't take a track ...
       if(!track)
 	continue;
 
-      // Correct the tracks and push back into the new container
-      xAOD::TrackParticle* newTrack = nullptr;
-      m_InDetTrackBiasingTool->correctedCopy( *track, newTrack );      
-      biasedTracks->push_back(newTrack);
-      delete newTrack;
+      biasedTracks->push_back(track);
+
     }
 
-  //m_InDetTrackBiasingTool->applyContainerCorrection( *biasedTracks );
   m_store->record( biasedTracks, m_outputTrackContainer );
   
   return EL::StatusCode::SUCCESS;
