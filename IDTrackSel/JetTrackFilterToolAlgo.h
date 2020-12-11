@@ -14,7 +14,7 @@ class JetTrackFilterToolAlgo : public EL::Algorithm
 {
 public:
   std::string m_name = "MattLeBlanc";
-  std::string m_JetContainerName = "AntiKt4EMTopoJets";
+  std::string m_JetContainerName = "AntiKt10LCTopoJets";
   std::string m_inputTrackContainer;
   std::string m_outputTrackContainer;
 
