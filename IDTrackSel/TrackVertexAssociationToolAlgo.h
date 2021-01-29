@@ -1,5 +1,5 @@
-#ifndef IDTrackSel_JetTrackFilterToolAlgo_H
-#define IDTrackSel_JetTrackFilterToolAlgo_H
+#ifndef IDTrackSel_TrackVertexAssociationToolAlgo_H
+#define IDTrackSel_TrackVertexAssociationToolAlgo_H
 
 #include <EventLoop/Algorithm.h>
 
@@ -7,36 +7,31 @@
 #include <xAODRootAccess/TEvent.h>
 #include <xAODRootAccess/TStore.h>
 
-#include "InDetTrackSystematicsTools/JetTrackFilterTool.h"
+#include "TrackVertexAssociationTool/TrackVertexAssociationTool.h"
+
+#include "xAODTracking/VertexContainer.h"
 #include "xAODTracking/TrackParticleContainer.h"
 
-class JetTrackFilterToolAlgo : public EL::Algorithm
+class TrackVertexAssociationToolAlgo : public EL::Algorithm
 {
-public:
+ public:
   std::string m_name = "MattLeBlanc";
-  std::string m_JetContainerName = "AntiKt10LCTopoJets";
   std::string m_inputTrackContainer;
   std::string m_outputTrackContainer;
+  std::string m_workingPoint;
 
-  // put the tool parameters here
+  Bool_t m_debug=false;
 
-  Bool_t m_debug;
-    
  private:
   xAOD::TEvent *m_event; //!
   xAOD::TStore *m_store; //!
 
-  InDet::JetTrackFilterTool* m_JetTrackFilterTool; //!
+  CP::TrackVertexAssociationTool* m_TrktoVxTool; //!  
 
-  CP::SystematicSet m_systSetJet = {
-    InDet::TrackSystematicMap[InDet::TRK_EFF_LOOSE_TIDE],
-    InDet::TrackSystematicMap[InDet::TRK_FAKE_RATE_LOOSE_TIDE]
-  };
-  
  public:
   // this is a standard constructor
-  JetTrackFilterToolAlgo ();
-
+  TrackVertexAssociationToolAlgo ();
+  
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);
   virtual EL::StatusCode fileExecute ();
@@ -49,7 +44,7 @@ public:
   virtual EL::StatusCode histFinalize ();
 
   // this is needed to distribute the algorithm to the workers
-  ClassDef(JetTrackFilterToolAlgo, 1);
+  ClassDef(TrackVertexAssociationToolAlgo, 1);
 };
 
 #endif

@@ -36,7 +36,7 @@ EL::StatusCode InDetTrackTruthFilterToolAlgo :: initialize ()
   CP::SystematicSet systSetTrk = {};
   if(m_systematic=="incl")
     {
-      CP::SystematicSet systSetTrk = {
+       systSetTrk = {
 	InDet::TrackSystematicMap[InDet::TRK_EFF_TIGHT_GLOBAL],
 	InDet::TrackSystematicMap[InDet::TRK_EFF_TIGHT_IBL],
 	InDet::TrackSystematicMap[InDet::TRK_EFF_TIGHT_PP0],
@@ -45,7 +45,7 @@ EL::StatusCode InDetTrackTruthFilterToolAlgo :: initialize ()
     }
   if(m_systematic=="fake")
     {
-      CP::SystematicSet systSetTrk = {
+      systSetTrk = {
 	InDet::TrackSystematicMap[InDet::TRK_FAKE_RATE_LOOSE]
       };
     }
