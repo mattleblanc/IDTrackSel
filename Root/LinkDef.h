@@ -19,10 +19,6 @@
 #endif
 
 #ifdef __CINT__
-#pragma link C++ class TightTrackVertexAssociationToolAlgo+;
-#endif
-
-#ifdef __CINT__
 #pragma link C++ class TrackVertexAssociationToolAlgo+;
 #endif
 

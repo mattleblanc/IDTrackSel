@@ -25,7 +25,10 @@ EL::StatusCode InDetTrackTruthFilterToolAlgo :: histInitialize () { return EL::S
 
 EL::StatusCode InDetTrackTruthFilterToolAlgo :: fileExecute () { return EL::StatusCode::SUCCESS; }
 
-EL::StatusCode InDetTrackTruthFilterToolAlgo :: changeInput (bool firstFile) { return EL::StatusCode::SUCCESS; }
+EL::StatusCode InDetTrackTruthFilterToolAlgo :: changeInput (bool firstFile) { 
+  if(firstFile) Info("InDetTrackTruthFilterToolAlgo :: changeInput()","first file\t");
+  return EL::StatusCode::SUCCESS; 
+}
 
 EL::StatusCode InDetTrackTruthFilterToolAlgo :: initialize ()
 {
