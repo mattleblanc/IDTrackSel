@@ -86,8 +86,8 @@ EL::StatusCode InDetTrackBiasingToolAlgo :: execute ()
 
   //Create a shallow copy of the tracking container and apply the correction to it
   std::pair< xAOD::TrackParticleContainer*, xAOD::ShallowAuxContainer* > inputTracks_shallowCopy = xAOD::shallowCopyContainer( *inputTracks );
-  //  ANA_CHECK( m_store->record( inputTracks_shallowCopy.first,  m_outputTrackContainer+"ShallowCopy"));
-  //  ANA_CHECK( m_store->record( inputTracks_shallowCopy.second, m_outputTrackContainer+"ShallowCopyAux."));
+    ANA_CHECK( m_store->record( inputTracks_shallowCopy.first,  m_outputTrackContainer+"ShallowCopy"));
+    ANA_CHECK( m_store->record( inputTracks_shallowCopy.second, m_outputTrackContainer+"ShallowCopyAux."));
 
   m_InDetTrackBiasingTool->applyContainerCorrection( *(inputTracks_shallowCopy.first)); 
 
