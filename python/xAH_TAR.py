@@ -1,13 +1,7 @@
 '''
-xAH_LundAnalysis.py
-An xAODAnaHelpers config to run studies on the jet Lund Plane, for HCW 2018.
-Matt LeBlanc (Arizona), matt.leblanc@cern.ch
-
-Cluster-level systematics tool implemented by J. Roloff (Harvard)
-(link)
-
-Original Lund Plane code from F. Dreyer
-https://github.com/rappoccio/fastjet-tutorial
+xAH_TAR.py
+An xAODAnaHelpers config to run studies on TAR jets.
+Matt LeBlanc (Arizona), matt.leblanc@cern.ch, 2019
 '''
 
 from xAODAnaHelpers import Config
@@ -110,3 +104,14 @@ c.algorithm("TARJetAlgo", {
     #"m_trackSelTool" : ""
 })
 
+c.algorithm("JetHistsAlgo", { "m_name" : "JetHistsAntiKt2LCTopoRCTARJets",
+                              "m_inContainerName"   : "AntiKt2LCTopoJetsTAR",
+                              "m_detailStr": "kinematic substructure tracksInJet"
+                          } )
+
+c.algorithm("TrackHistsAlgo", {
+    "m_name": "TracksHistsAlgoTARTracks",
+    "m_inContainerName": "OutTracks",
+    "m_detailStr": "2D IPDetails",
+    "m_msgLevel": "info"
+})

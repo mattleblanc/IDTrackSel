@@ -71,11 +71,9 @@ EL::StatusCode TARJetAlgo :: initialize ()
 
 EL::StatusCode TARJetAlgo :: execute ()
 {
-  std::cout << "execute()" << std::endl;
+  m_debug = true;
 
-  m_debug = false;
-
-  std::cout << "getting tracks" << std::endl;
+  if(m_debug) std::cout << "getting tracks" << std::endl;
   // Retrieve the input TrackParticleContainer
   const xAOD::TrackParticleContainer_v1* inputTracks  = 0;
   if(!m_event->retrieve(inputTracks, m_inputTrackContainer).isSuccess()){
@@ -83,7 +81,7 @@ EL::StatusCode TARJetAlgo :: execute ()
     return EL::StatusCode::FAILURE;
   }
 
-  std::cout << "getting jets" << std::endl;
+  if(m_debug) std::cout << "getting jets" << std::endl;
   // Retrieve the input JetContainer
   const xAOD::JetContainer* inputJetsForReclustering=0;
   if(!m_event->retrieve(inputJetsForReclustering, m_inputJetContainer).isSuccess()){
@@ -91,7 +89,7 @@ EL::StatusCode TARJetAlgo :: execute ()
     return EL::StatusCode::FAILURE;
   }
 
-  std::cout << "making a view container for some reason" << std::endl;
+  if(m_debug) std::cout << "making a view container for some reason" << std::endl;
   TString selectedJetsName = "ShallowInput" + m_inputJetContainer + "selected";
 
   // only select jets satisfying pt and eta criteria for reclustering
@@ -104,16 +102,17 @@ EL::StatusCode TARJetAlgo :: execute ()
 
 
   //  //m_jetReclTool_handle->get()->execute();
-  std::cout << "reclustering jets" << std::endl;
+  if(m_debug) std::cout << "reclustering jets" << std::endl;
   m_jetReclTool_handle->execute();
 
-  std::cout << "retrieving reclustered jets" << std::endl;
+  if(m_debug) std::cout << "retrieving reclustered jets" << std::endl;
   const xAOD::JetContainer * constParticles;
   m_event->retrieve(constParticles, "RC"+m_inputJetContainer);
 
-  std::cout << "doing the shallow copy thing" << std::endl;
+  if(m_debug) std::cout << "doing the shallow copy thing" << std::endl;
   // make shallow copy of trimmed reclustered jets
-  TString shallowCopyName = "ShallowInputTest";//+m_outputJets;
+  //TString shallowCopyName = "ShallowInputTest";//+m_outputJets;
+  TString shallowCopyName = m_inputJetContainer+"TAR";
   auto trimmedRCAntiKt10JetsShallowCopy = xAOD::shallowCopyContainer(*constParticles);
   std::unique_ptr<xAOD::JetContainer> trimmedRCAntiKt10Jets (trimmedRCAntiKt10JetsShallowCopy.first);
   std::unique_ptr<xAOD::ShallowAuxContainer> trimmedRCAntiKt10JetsAux (trimmedRCAntiKt10JetsShallowCopy.second);
@@ -135,27 +134,25 @@ EL::StatusCode TARJetAlgo :: execute ()
   */
   
   //build TAR jets 
-  std::cout << "decorate reclustered jet with TAR information" << std::endl;
+  if(m_debug) std::cout << "decorate reclustered jet with TAR information" << std::endl;
   m_TARDecoTool_handle->modify(*trimmedRCAntiKt10Jets);
 
   // Create the output TrackParticleContainer
-  std::cout << "creating output track container" << std::endl;
+  if(m_debug) std::cout << "creating output track container" << std::endl;
   ConstDataVector<xAOD::TrackParticleContainer>* selectedTracks(nullptr);
   selectedTracks = new ConstDataVector<xAOD::TrackParticleContainer>(SG::VIEW_ELEMENTS);
 
-  std::cout << "decorating reclustered jets" << std::endl;
+  if(m_debug) std::cout << "decorating reclustered jets" << std::endl;
   for (xAOD::Jet *jet : *trimmedRCAntiKt10Jets) {
     //Props::sysName.set(jet, "nominal");
     ANA_CHECK(decorate(jet));
   }
 
-  std::cout << "writing shallow copy of reclustered jets" << std::endl;
+  if(m_debug) std::cout << "writing shallow copy of reclustered jets " << shallowCopyName << std::endl;
   ATH_CHECK (evtStore()->record(trimmedRCAntiKt10Jets.release(), (shallowCopyName).Data()));
   ATH_CHECK (evtStore()->record(trimmedRCAntiKt10JetsAux.release(), (shallowCopyName + "Aux.").Data()));
 
-
-
-  std::cout << "Writing output tracks" << std::endl;
+  if(m_debug) std::cout << "Writing output tracks "<< m_outputTrackContainer << std::endl;
   m_store->record( selectedTracks, m_outputTrackContainer+"Test" );
 
   return EL::StatusCode::SUCCESS;
