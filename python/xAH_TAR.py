@@ -8,7 +8,7 @@ from xAODAnaHelpers import Config
 c = Config()
 
 #c.output("ANALYSIS")
-#c.setalg("MessagePrinterAlgo", {"m_sourceWidth": 60})
+#c.algorithm("MessagePrinterAlgo", {"m_sourceWidth": 60})
 
 c.algorithm("BasicEventSelection", {"m_name": "BasicEventSelector",
                                     "m_isMC" : True,
@@ -32,26 +32,23 @@ c.algorithm("BasicEventSelection", {"m_name": "BasicEventSelector",
                                     "m_applyJetCleaningEventFlag" : True, # This does the event-level jet cleaning.
                                  })
 
-"""
-c.setalg("JetCalibrator", { "m_name"                  : "SmallJetCalibratorEMPFlow",
-                            "m_inContainerName"       : "AntiKt4EMPFlowJets",
-                            "m_outContainerName"      : "AntiKt4EMPFlowJetsCalib",
-                            "m_jetAlgo"               : "AntiKt4EMPFlow",
-                            "m_outputAlgo"            : "AntiKt4EMPFlow_Calib_Algo",
-                            "m_calibConfigFullSim"    : "JES_MC16Recommendation_Consolidated_PFlow_Apr2019_Rel21.config ",
-                            "m_calibConfigData"       : "JES_MC16Recommendation_Consolidated_PFlow_Apr2019_Rel21.config ",
-                            "m_uncertConfig"          : "rel21/Fall2018/R4_GlobalReduction_SimpleJER.config ",
-                            "m_calibSequence"         : "JetArea_Residual_EtaJES_GSC_Smear",
-                            "m_pseudoData"            : False,
-                            #"m_overrideAnalysisFile"  : "DijetFlavourComp_Run2.root", # if you want to use a custom flavour composition file
-                            "m_overrideCalibArea"     : "00-04-82",
-                            "m_doCleaning"            : False,
-                            "m_systVal"               : 1,
-                            "m_systName"              : "All",
-                            "m_sort"                  : True                            
-                            })
+c.algorithm("JetCalibrator", { "m_name"                  : "JetCalibrator4PF",
+                               "m_inContainerName"       : "AntiKt4EMPFlowJets",
+                               "m_outContainerName"      : "AntiKt4EMPFlowJetsCalib",
+                               "m_jetAlgo"               : "AntiKt4EMPFlow",
+                               "m_outputAlgo"            : "AntiKt4EMPFlow_Calib_Algo",
+                               "m_calibConfigFullSim"    : "JES_MC16Recommendation_Consolidated_PFlow_Apr2019_Rel21.config ",
+                               "m_uncertConfig"          : "rel21/Fall2018/R4_GlobalReduction_SimpleJER.config ",
+                               "m_calibSequence"         : "JetArea_Residual_EtaJES_GSC_Smear",
+                               "m_pseudoData"            : False,
+                               "m_overrideCalibArea"     : "00-04-82",
+                               "m_doCleaning"            : False,
+                               "m_systVal"               : 1,
+                               "m_systName"              : "nominal",
+                               "m_sort"                  : True                            
+                           })
 
-c.algorithm("JetSelector",{"m_name"             : "JetSelectorAlgoEMPFlow",
+c.algorithm("JetSelector",{"m_name"             : "JetSelector4PF",
                            "m_inContainerName"  : "AntiKt4EMPFlowJetsCalib",
                            "m_outContainerName" : "AntiKt4EMPFlowJetsCalibSel",
                            "m_createSelectedContainer" : True,
@@ -63,24 +60,106 @@ c.algorithm("JetSelector",{"m_name"             : "JetSelectorAlgoEMPFlow",
                            "m_WorkingPointJVT" : "Medium"
                            })
 
-c.algorithm("JetReclusteringAlgo", {"m_name"             : "JetReclusteringEMPFlow",
-                                    #"m_inputJetContainer" : "AntiKt4EMPFlowJetsCalibSel",
-                                    "m_inputJetContainer" : "AntiKt2LCTopoJets",
-                                    #"m_outputJetContainer" : "AntiKt08EMPFlowRCJets",                                    
-                                    "m_outputJetContainer" : "AntiKt8LCTopoRCJets",
-                                    "m_rc_alg" : "AntiKt",  
-                                    "m_radius" : 0.8,
-                                    "m_ptMin_input" : 25.0, # pt cut on input R=0.4 jets
-                                    "m_ptMin_rc" : 100.0,   # RC jet pt cut     
-                                    "m_ptFrac" : 0.0       # don't groom the RC jets!                                
+c.algorithm("JetReclusteringAlgo", {"m_name"             : "JetReclustering4PF",
+                                    "m_inputJetContainer" : "AntiKt4EMPFlowJetsCalibSel",
+                                    "m_outputJetContainer" : "AntiKt10EMPFlowRCJets",
+                                    "m_rc_alg" : "AntiKt",
+                                    "m_radius" : 1.0,
+                                    "m_ptMin_input" : 25.0, # pt cut on input jets
+                                    "m_ptMin_rc" : 100.0,   # RC jet pt cut
+                                    "m_trim_ptFrac" : 0.0       # don't groom the RC jets!
                                 })
 
-c.algorithm("JetHistsAlgo", { "m_name" : "JetHistsAntiKt8LCTopoRCJets",
-                              "m_inContainerName"   : "AntiKt8LCTopoRCJets",
-                              "m_detailStr": "kinematic substructure"
-                          } )
+c.algorithm("JetCalibrator", { "m_name"                  : "JetCalibrator2LC",
+                               "m_inContainerName"       : "AntiKt2LCTopoJets",
+                               "m_outContainerName"      : "AntiKt2LCTopoJetsCalib",
+                               "m_jetAlgo"               : "AntiKt2LCTopo",
+                               "m_outputAlgo"            : "AntiKt2LCTopo_Calib_Algo",
+                               "m_calibConfigFullSim"    : "JES_2015_2016_data_Rscan2LC_18Dec2018_R21.config",
+                               "m_calibSequence"         : "JetArea_Residual_EtaJES_GSC",
+                               "m_overrideCalibArea"     : "00-04-82",
+                               "m_doCleaning"            : False,
+                               "m_systVal"               : 1,
+                               "m_systName"              : "nominal",
+                               "m_sort"                  : True
+                           })
 
-"""
+c.algorithm("JetSelector",{"m_name"             : "JetSelector2LC",
+                           "m_inContainerName"  : "AntiKt2LCTopoJetsCalib",
+                           "m_outContainerName" : "AntiKt2LCTopoJetsCalibSel",
+                           "m_createSelectedContainer" : True,
+                           "m_pT_min"           : 25.e3,
+                           "m_eta_max"          : 4.9,
+                           "m_doJVT"                   :  False,
+                           #"m_pt_max_JVT"              :  60e3,
+                           #"m_eta_max_JVT"             :  2.4,
+                           #"m_WorkingPointJVT" : "Medium"
+                           })
+
+c.algorithm("JetReclusteringAlgo",  {"m_name"             : "JetReclustering2LC",
+                                    "m_inputJetContainer" : "AntiKt2LCTopoJetsCalibSel",
+                                    "m_outputJetContainer" : "AntiKt10LCTopoRCJets",
+                                    "m_rc_alg" : "AntiKt",
+                                    "m_radius" : 1.0,
+                                    "m_ptMin_input" : 25.0, # pt cut on input jets
+                                    "m_ptMin_rc" : 100.0,   # RC jet pt cut
+                                    "m_trim_ptFrac" : 0.0       # don't groom the RC jets!
+                                })
+
+c.algorithm("JetCalibrator", { "m_name"                  : "JetCalibrator10LC",
+                               "m_inContainerName"       : "AntiKt10LCTopoTrimmedPtFrac5SmallR20Jets",
+                               "m_outContainerName"      : "AntiKt10LCTopoTrimmedPtFrac5SmallR20JetsCalib",
+                               "m_jetAlgo"               : "AntiKt10LCTopoTrimmedPtFrac5SmallR20",
+                               "m_outputAlgo"            : "AntiKt10LCTopoTrimmedPtFrac5SmallR20_Calib_Algo",
+                               "m_calibConfigFullSim"    : "JES_MC16recommendation_FatJet_Trimmed_JMS_comb_17Oct2018.config ",
+                               "m_calibSequence"         : "EtaJES_JMS",
+                               "m_overrideCalibArea"     : "00-04-82",
+                               "m_doCleaning"            : False,
+                               "m_systVal"               : 1,
+                               "m_systName"              : "nominal",
+                               "m_sort"                  : True,
+                               "m_useLargeRTruthLabelingTool" : False
+                           })
+
+c.algorithm("JetSelector",{"m_name"             : "JetSelector10LC",
+                           "m_inContainerName"  : "AntiKt10LCTopoTrimmedPtFrac5SmallR20JetsCalib",
+                           "m_outContainerName" : "AntiKt10LCTopoTrimmedPtFrac5SmallR20JetsCalibSel",
+                           "m_createSelectedContainer" : True,
+                           "m_pT_min"           : 100.e3,
+                           "m_eta_max"          : 2.0,
+                           "m_doJVT"                   :  False,
+                           #"m_pt_max_JVT"              :  60e3,
+                           #"m_eta_max_JVT"             :  2.4,
+                           #"m_WorkingPointJVT" : "Medium"
+                           })
+
+
+c.algorithm("JetCalibrator", { "m_name"                  : "JetCalibrator10UF",
+                               "m_inContainerName"       : "AntiKt10UFOCSSKSoftDropBeta100Zcut10Jets",
+                               "m_outContainerName"      : "AntiKt10UFOCSSKSoftDropBeta100Zcut10JetsCalib",
+                               "m_jetAlgo"               : "AntiKt10UFOCSSKSoftDropBeta100Zcut10",
+                               "m_outputAlgo"            : "AntiKt10UFOCSSKSoftDropBeta100Zcut10_Calib_Algo",
+                               "m_calibConfigFullSim"    : "JES_MC16recommendation_R10_UFO_CSSK_SoftDrop_JMS_01April2020.config" ,
+                               "m_calibSequence"         : "EtaJES_JMS",
+                               "m_overrideCalibArea"     : "00-04-82",
+                               "m_doCleaning"            : False,
+                               "m_systVal"               : 1,
+                               "m_systName"              : "nominal",
+                               "m_sort"                  : True,
+                               "m_useLargeRTruthLabelingTool" : False
+                           })
+
+c.algorithm("JetSelector",{"m_name"             : "JetSelector10UF",
+                           "m_inContainerName"  : "AntiKt10UFOCSSKSoftDropBeta100Zcut10JetsCalib",
+                           "m_outContainerName" : "AntiKt10UFOCSSKSoftDropBeta100Zcut10JetsCalibSel",
+                           "m_createSelectedContainer" : True,
+                           "m_pT_min"           : 100.e3,
+                           "m_eta_max"          : 2.0,
+                           "m_doJVT"                   :  False,
+                           #"m_pt_max_JVT"              :  60e3,
+                           #"m_eta_max_JVT"             :  2.4,
+                           #"m_WorkingPointJVT" : "Medium"
+                           })
 
 c.algorithm("InDetTrackSelectionToolAlgo", {
     "m_name": "InDetTrackSelectionToolAlgo_TAR",
@@ -90,11 +169,9 @@ c.algorithm("InDetTrackSelectionToolAlgo", {
 })
 
 c.algorithm("TARJetAlgo", {
-    #"m_inputJetContainer" : "AntiKt8LCTopoRCJets",
-    "m_inputJetContainer" : "AntiKt2LCTopoJets",
-    #"m_inputTrackContainer" : "SelectedTrackParticles_InDetTrackParticles",
-    "m_inputTrackContainer" : "InDetTrackParticles",
-    "m_outputTrackContainer" : "OutTracks",
+    "m_inputJetContainer" : "AntiKt10LCTopoRCJets",
+    "m_inTrackColl" : "InDetTrackParticles",
+    "m_outTrackColl" : "OutTracks",
     "m_assocTracksOutName" : "TARTracks",
     "m_dRmatch" : 0.3,
     "m_assocTracksInName" : "GhostTrack",
@@ -104,14 +181,12 @@ c.algorithm("TARJetAlgo", {
     #"m_trackSelTool" : ""
 })
 
-c.algorithm("JetHistsAlgo", { "m_name" : "JetHistsAntiKt2LCTopoRCTARJets",
-                              "m_inContainerName"   : "AntiKt2LCTopoJetsTAR",
-                              "m_detailStr": "kinematic substructure tracksInJet"
-                          } )
-
-c.algorithm("TrackHistsAlgo", {
-    "m_name": "TracksHistsAlgoTARTracks",
-    "m_inContainerName": "OutTracks",
-    "m_detailStr": "2D IPDetails",
-    "m_msgLevel": "info"
-})
+c.algorithm("TreeAlgo",{"m_name": "TreeAlgoMLB",
+                        "m_jetContainerName": "AntiKt10LCTopoTrimmedPtFrac5SmallR20JetsCalibSel AntiKt10UFOCSSKSoftDropBeta100Zcut10JetsCalibSel AntiKt10EMPFlowRCJets AntiKt10LCTopoRCJets",
+                        "m_jetBranchName":    "AntiKt10LCTopoTrimmedPtFrac5SmallR20JetsCalibSel AntiKt10UFOCSSKSoftDropBeta100Zcut10JetsCalibSel AntiKt10EMPFlowRCJets AntiKt10LCTopoRCJets",
+                        "m_jetDetailStr": "kinematic",
+                        #"m_METContainerName": "NewMETRefFinal",
+                        #"m_evtDetailStr": "pileup",
+                        #"m_trigDetailStr": "basic menuKeys passTriggers",
+                        
+                    })
