@@ -62,7 +62,7 @@ c.algorithm("JetSelector",{"m_name"             : "JetSelector4PF",
 
 c.algorithm("JetReclusteringAlgo", {"m_name"             : "JetReclustering4PF",
                                     "m_inputJetContainer" : "AntiKt4EMPFlowJetsCalibSel",
-                                    "m_outputJetContainer" : "AntiKt10EMPFlowRCJets",
+                                    "m_outputJetContainer" : "AntiKt10EMPFlowRC4Jets",
                                     "m_rc_alg" : "AntiKt",
                                     "m_radius" : 1.0,
                                     "m_ptMin_input" : 25.0, # pt cut on input jets
@@ -70,6 +70,44 @@ c.algorithm("JetReclusteringAlgo", {"m_name"             : "JetReclustering4PF",
                                     "m_trim_ptFrac" : 0.0       # don't groom the RC jets!
                                 })
 
+c.algorithm("TARJetAlgo", {
+    "m_inputJetContainer" : "AntiKt10EMPFlowRC4Jets",
+    "m_outputJetContainer" : "AntiKt10EMPFlowRC4TARJets",
+    "m_inTrackColl" : "InDetTrackParticles",    
+    "m_outTrackColl" : "OutTracksPFRC",
+    "m_assocTracksOutName" : "TARTracksPFRC",
+    "m_dRmatch" : 0.3,
+    "m_assocTracksInName" : "GhostTrack",
+    "m_vertexColl" : "PrimaryVertices",
+    "m_trackVtxAssoc" : "",
+    "m_doTrackVtxAssoc" : True,
+    #"m_trackSelTool" : ""
+})
+
+# AntiKt4TruthJets
+c.algorithm("JetSelector",{"m_name"             : "JetSelector4TR",
+                           "m_inContainerName"  : "AntiKt4TruthJets",
+                           "m_outContainerName" : "AntiKt4TruthJetsSel",
+                           "m_createSelectedContainer" : True,
+                           "m_pT_min"           : 25.e3,
+                           "m_eta_max"          : 4.9,
+                           "m_doJVT"                   :  False,
+                           #"m_pt_max_JVT"              :  60e3,
+                           #"m_eta_max_JVT"             :  2.4,
+                           #"m_WorkingPointJVT" : "Medium"
+                           })
+
+c.algorithm("JetReclusteringAlgo", {"m_name"             : "JetReclustering4TR",
+                                    "m_inputJetContainer" : "AntiKt4TruthJetsSel",
+                                    "m_outputJetContainer" : "AntiKt10TruthRC4Jets",
+                                    "m_rc_alg" : "AntiKt",
+                                    "m_radius" : 1.0,
+                                    "m_ptMin_input" : 25.0, # pt cut on input jets
+                                    "m_ptMin_rc" : 100.0,   # RC jet pt cut
+                                    "m_trim_ptFrac" : 0.0       # don't groom the RC jets!
+                                })
+
+# R=0.2 >> R=1.0 jets for TAR
 c.algorithm("JetCalibrator", { "m_name"                  : "JetCalibrator2LC",
                                "m_inContainerName"       : "AntiKt2LCTopoJets",
                                "m_outContainerName"      : "AntiKt2LCTopoJetsCalib",
@@ -98,13 +136,27 @@ c.algorithm("JetSelector",{"m_name"             : "JetSelector2LC",
 
 c.algorithm("JetReclusteringAlgo",  {"m_name"             : "JetReclustering2LC",
                                     "m_inputJetContainer" : "AntiKt2LCTopoJetsCalibSel",
-                                    "m_outputJetContainer" : "AntiKt10LCTopoRCJets",
+                                    "m_outputJetContainer" : "AntiKt10LCTopoRC2Jets",
                                     "m_rc_alg" : "AntiKt",
                                     "m_radius" : 1.0,
                                     "m_ptMin_input" : 25.0, # pt cut on input jets
                                     "m_ptMin_rc" : 100.0,   # RC jet pt cut
                                     "m_trim_ptFrac" : 0.0       # don't groom the RC jets!
                                 })
+
+c.algorithm("TARJetAlgo", {
+    "m_inputJetContainer" : "AntiKt10LCTopoRC2Jets",
+    "m_outputJetContainer" : "AntiKt10LCTopoRC2TARJets",
+    "m_inTrackColl" : "InDetTrackParticles",
+    "m_outTrackColl" : "OutTracksLCRC",
+    "m_assocTracksOutName" : "TARTracksLCRC",
+    "m_dRmatch" : 0.3,
+    "m_assocTracksInName" : "GhostTrack",
+    "m_vertexColl" : "PrimaryVertices",
+    "m_trackVtxAssoc" : "",
+    "m_doTrackVtxAssoc" : True,
+#"m_trackSelTool" : ""
+})
 
 c.algorithm("JetCalibrator", { "m_name"                  : "JetCalibrator10LC",
                                "m_inContainerName"       : "AntiKt10LCTopoTrimmedPtFrac5SmallR20Jets",
@@ -168,23 +220,38 @@ c.algorithm("InDetTrackSelectionToolAlgo", {
     "m_CutLevel": "Loose"
 })
 
-c.algorithm("TARJetAlgo", {
-    "m_inputJetContainer" : "AntiKt10LCTopoRCJets",
-    "m_inTrackColl" : "InDetTrackParticles",
-    "m_outTrackColl" : "OutTracks",
-    "m_assocTracksOutName" : "TARTracks",
-    "m_dRmatch" : 0.3,
-    "m_assocTracksInName" : "GhostTrack",
-    "m_vertexColl" : "PrimaryVertices",
-    "m_trackVtxAssoc" : "",
-    "m_doTrackVtxAssoc" : True,
-    #"m_trackSelTool" : ""
-})
+c.algorithm("JetSelector",{"m_name"             : "JetSelector2TR",
+                           "m_inContainerName"  : "AntiKt2TruthJets",
+                           "m_outContainerName" : "AntiKt2TruthJetsSel",
+                           "m_createSelectedContainer" : True,
+                           "m_pT_min"           : 25.e3,
+                           "m_eta_max"          : 4.9,
+                           "m_doJVT"                   :  False,
+                           #"m_pt_max_JVT"              :  60e3,
+                           #"m_eta_max_JVT"             :  2.4,
+                           #"m_WorkingPointJVT" : "Medium"
+                           })
+
+c.algorithm("JetReclusteringAlgo", {"m_name"             : "JetReclustering2TR",
+                                    "m_inputJetContainer" : "AntiKt2TruthJetsSel",
+                                    "m_outputJetContainer" : "AntiKt10TruthRC2Jets",
+                                    "m_rc_alg" : "AntiKt",
+                                    "m_radius" : 1.0,
+                                    "m_ptMin_input" : 25.0, # pt cut on input jets
+                                    "m_ptMin_rc" : 100.0,   # RC jet pt cut
+                                    "m_trim_ptFrac" : 0.0       # don't groom the RC jets!
+                                })
 
 c.algorithm("TreeAlgo",{"m_name": "TreeAlgoMLB",
-                        "m_jetContainerName": "AntiKt10LCTopoTrimmedPtFrac5SmallR20JetsCalibSel AntiKt10UFOCSSKSoftDropBeta100Zcut10JetsCalibSel AntiKt10EMPFlowRCJets AntiKt10LCTopoRCJets",
-                        "m_jetBranchName":    "AntiKt10LCTopoTrimmedPtFrac5SmallR20JetsCalibSel AntiKt10UFOCSSKSoftDropBeta100Zcut10JetsCalibSel AntiKt10EMPFlowRCJets AntiKt10LCTopoRCJets",
-                        "m_jetDetailStr": "kinematic",
+                        "m_fatJetContainerName": "AntiKt10LCTopoTrimmedPtFrac5SmallR20JetsCalibSel AntiKt10UFOCSSKSoftDropBeta100Zcut10JetsCalibSel AntiKt10EMPFlowRC4TARJets AntiKt10LCTopoRC2TARJets AntiKt10TruthSoftDropBeta100Zcut10Jets AntiKt10TruthTrimmedPtFrac5SmallR20Jets AntiKt10TruthRC4Jets AntiKt10TruthRC2Jets ",
+                        "m_fatJetBranchName":    "AntiKt10LCTopoTrimmedPtFrac5SmallR20JetsCalibSel AntiKt10UFOCSSKSoftDropBeta100Zcut10JetsCalibSel AntiKt10EMPFlowRC4TARJets AntiKt10LCTopoRC2TARJets AntiKt10TruthSoftDropBeta100Zcut10Jets AntiKt10TruthTrimmedPtFrac5SmallR20Jets AntiKt10TruthRC4Jets AntiKt10TruthRC2Jets",
+                        "m_fatJetDetailStr": "kinematic tar",
+
+                        #"m_truthFatJetContainerName": "AntiKt10TruthSoftDropBeta100Zcut10Jets AntiKt10TruthTrimmedPtFrac5SmallR20Jets AntiKt10TruthRC4Jets AntiKt10TruthRC2Jets",
+                        #"m_truthFatJetDetailStr": "kinematic",
+
+                        ## TODO ADD TRUTH JETS
+
                         #"m_METContainerName": "NewMETRefFinal",
                         #"m_evtDetailStr": "pileup",
                         #"m_trigDetailStr": "basic menuKeys passTriggers",

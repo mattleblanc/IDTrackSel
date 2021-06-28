@@ -46,6 +46,7 @@ class TARJetAlgo : public EL::Algorithm
   */
 
   std::string m_inputJetContainer;
+  std::string m_outputJetContainer;
   
   std::string m_inTrackColl = "InDetTrackParticles";
   std::string m_inSelTrackColl; // Name of a view container to allow a track preselection

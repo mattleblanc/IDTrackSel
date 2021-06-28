@@ -38,6 +38,7 @@ EL::StatusCode TARJetAlgo :: initialize ()
   //ANA_CHECK( ASG_MAKE_ANA_TOOL(m_TARJetTool_handle, TARJetTool) );
 
   ANA_CHECK( m_TARJetTool_handle.setProperty("InputTrackContainer", m_inTrackColl ) );
+  ANA_CHECK( m_TARJetTool_handle.setProperty("OutputTrackContainer",m_outputJetContainer) );
   ANA_CHECK( m_TARJetTool_handle.setProperty("InputSelectedTrackContainer", m_inSelTrackColl) );
   ANA_CHECK( m_TARJetTool_handle.setProperty("OutputTrackContainer", m_outTrackColl ) );
   ANA_CHECK( m_TARJetTool_handle.setProperty("OutputAssociatedTracks", m_assocTracksOutName) );
@@ -91,8 +92,17 @@ EL::StatusCode TARJetAlgo :: execute ()
   
   int status = m_TARJetTool_handle->modify(*inputJets);
 
-  //int iJet = 0;
+  // Create the output TrackParticleContainer
+  ConstDataVector<xAOD::JetContainer>* outputJets(nullptr);
+  outputJets = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
+  for (const xAOD::Jet* jet : *inputJets)
+    {
+      if(!jet) continue;
+      outputJets->push_back(jet);
+    }
+
   /*
+  int iJet = 0;
   for (const xAOD::Jet* jet : *inputJets)
     {    
       std::cout << "jet " << iJet 
@@ -107,92 +117,7 @@ EL::StatusCode TARJetAlgo :: execute ()
     }
   */
 
-  /*
-  if(m_debug) std::cout << "getting tracks" << std::endl;
-  // Retrieve the input TrackParticleContainer
-  const xAOD::TrackParticleContainer_v1* inputTracks  = 0;
-  if(!m_event->retrieve(inputTracks, m_inputTrackContainer).isSuccess()){
-    Error("execute()","Failed to retrieve input track container.\tEject!");
-    return EL::StatusCode::FAILURE;
-  }
-  */
-  
-  /*
-  if(m_debug) std::cout << "getting jets" << std::endl;
-  // Retrieve the input JetContainer
-  const xAOD::JetContainer* inputJetsForReclustering=0;
-  if(!m_event->retrieve(inputJetsForReclustering, m_inputJetContainer).isSuccess()){
-    Error("execute()","Failed to retrieve input jet container.\tEject!");
-    return EL::StatusCode::FAILURE;
-  }
-
-  if(m_debug) std::cout << "making a view container for some reason" << std::endl;
-  TString selectedJetsName = "ShallowInput" + m_inputJetContainer + "selected";
-
-  // only select jets satisfying pt and eta criteria for reclustering
-  auto selectedInputJetsForReclustering = std::make_unique<ConstDataVector<xAOD::JetContainer>> (SG::VIEW_ELEMENTS);
-  for (const xAOD::Jet *jet : *inputJetsForReclustering) {
-    selectedInputJetsForReclustering->push_back(jet);
-  }
-
-  ATH_CHECK(evtStore()->record(selectedInputJetsForReclustering.release(), "ShallowInput" + m_inputJetContainer + "selected"));
-
-
-  //  //m_jetReclTool_handle->get()->execute();
-  if(m_debug) std::cout << "reclustering jets" << std::endl;
-  m_jetReclTool_handle->execute();
-
-  if(m_debug) std::cout << "retrieving reclustered jets" << std::endl;
-  const xAOD::JetContainer * constParticles;
-  m_event->retrieve(constParticles, "RC"+m_inputJetContainer);
-
-  if(m_debug) std::cout << "doing the shallow copy thing" << std::endl;
-  // make shallow copy of trimmed reclustered jets
-  //TString shallowCopyName = "ShallowInputTest";//+m_outputJets;
-  TString shallowCopyName = m_inputJetContainer+"TAR";
-  auto trimmedRCAntiKt10JetsShallowCopy = xAOD::shallowCopyContainer(*constParticles);
-  std::unique_ptr<xAOD::JetContainer> trimmedRCAntiKt10Jets (trimmedRCAntiKt10JetsShallowCopy.first);
-  std::unique_ptr<xAOD::ShallowAuxContainer> trimmedRCAntiKt10JetsAux (trimmedRCAntiKt10JetsShallowCopy.second);
-  */
-
-
-  // Create a shallow copy of the current jet container
-  //std::pair<xAOD::JetContainer*, xAOD::ShallowAuxContainer *> shallowCopyCont = xAOD::shallowCopyContainer(*constParticles);
-  
-  //xAOD::JetContainer* shallowCopyCont = nullptr;
-
-  /*
-  ANA_CHECK( CP::detail::ShallowCopy< xAOD::JetContainer >::getCopy( HelperFunctions::msg(),
-								     m_store,
-								     shallowCopyCont,
-								     Jets, 
-								      m_inputJetContainer+"Copy",
-								      m_inputJetContainer+"CopyAux." ) );
-  */
-  
-  //build TAR jets 
-  /*
-  if(m_debug) std::cout << "decorate reclustered jet with TAR information" << std::endl;
-  m_TARDecoTool_handle->modify(*trimmedRCAntiKt10Jets);
-
-  // Create the output TrackParticleContainer
-  if(m_debug) std::cout << "creating output track container" << std::endl;
-  ConstDataVector<xAOD::TrackParticleContainer>* selectedTracks(nullptr);
-  selectedTracks = new ConstDataVector<xAOD::TrackParticleContainer>(SG::VIEW_ELEMENTS);
-
-  if(m_debug) std::cout << "decorating reclustered jets" << std::endl;
-  for (xAOD::Jet *jet : *trimmedRCAntiKt10Jets) {
-    Props::sysName.set(jet, "nominal");
-    ANA_CHECK(decorate(jet));
-  }
-
-  if(m_debug) std::cout << "writing shallow copy of reclustered jets " << shallowCopyName << std::endl;
-  ATH_CHECK (evtStore()->record(trimmedRCAntiKt10Jets.release(), (shallowCopyName).Data()));
-  ATH_CHECK (evtStore()->record(trimmedRCAntiKt10JetsAux.release(), (shallowCopyName + "Aux.").Data()));
-
-  if(m_debug) std::cout << "Writing output tracks "<< m_outputTrackContainer << std::endl;
-  m_store->record( selectedTracks, m_outputTrackContainer+"Test" );
-  */
+  m_store->record( outputJets, m_outputJetContainer );
 
   return EL::StatusCode::SUCCESS;
 }
